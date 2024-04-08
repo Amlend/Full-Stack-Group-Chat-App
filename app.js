@@ -6,6 +6,8 @@ const loginRouter = require("./routers/login");
 const vchatRouter = require("./routers/vchat");
 const sequelize = require("./util/database");
 const User = require("./models/user");
+const Message = require("./models/message");
+const msgRouter = require("./routers/message");
 const port = 3000;
 const app = express();
 
@@ -19,6 +21,10 @@ app.use(express.static(path.join(__dirname, "public", "src")));
 app.use(signUpRouter);
 app.use(loginRouter);
 app.use(vchatRouter);
+app.use(msgRouter);
+
+User.hasMany(Message);
+Message.belongsTo(User);
 
 app.get("*", (req, res) => {
   res.send("Page Not Found ");

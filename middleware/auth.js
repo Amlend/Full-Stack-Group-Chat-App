@@ -8,12 +8,16 @@ exports.authentication = (req, res, next) => {
     const user = jwt.verify(token, "123456abcdef");
 
     console.log(">>>> User Verified :", user.userId);
-    User.findByPk(user.userId).then((user) => {
-      req.user = user;
+    User.findByPk(user.userId)
+      .then((user) => {
+        req.user = user;
 
-      next();
-    });
+        next();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   } catch (error) {
-    console.log(error, "Middleware error");
+    console.log("Middleware error");
   }
 };
