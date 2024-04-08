@@ -25,15 +25,20 @@
       referrerpolicy="no-referrer"
     ></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="msgBox.js"></script>
   </head>
   <body>
     <nav>
       <img class="logo" src="chat.jpeg" alt="icon loding ...." />
     </nav>
 
-    <div class="container msg-box">
-      <div class="container message left">Shyam : hey bro , kya kr rha hai</div>
-      <div class="container message right">Amlend : ha bol , kooch nhi</div>
+    <div class="container msg-box" id="msgBox">
+      <div class="container message left" id="leftBox">
+        Shyam : hey bro , kya kr rha hai
+      </div>
+      <div class="container message right" id="rightBox">
+        Amlend : ha bol , kooch nhi
+      </div>
     </div>
     <div class="send">
       <form

@@ -9,5 +9,6 @@ router.post(
   authentication.authentication,
   msgController.PostMessage
 );
+router.get("/get-msg", authentication.authentication, msgController.getMsg);
 
 module.exports = router;
