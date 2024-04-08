@@ -1,8 +1,8 @@
 .logo {
   display: block;
-  margin: auto;
-  width: 50px;
-  height: 50px;
+  margin: 10px;
+  width: 40px;
+  height: 40px;
 }
 
 body {
@@ -21,7 +21,7 @@ body {
   border: black 2px solid;
   border-radius: 10px;
   margin: auto;
-  height: 80vh;
+  height: 77vh;
   padding: 5px;
   overflow-y: auto;
   margin-bottom: 20px;
@@ -61,4 +61,18 @@ body {
   border: black 2px solid;
   border-radius: 6px;
   height: 34px;
+}
+.groupBox {
+  min-width: 100px;
+  height: 500px;
+  background-color: white;
+  padding-top: 10px;
+  padding: 10px;
+  border: 2px solid black;
+  border-radius: 5px;
+  overflow-y: auto;
+}
+.panel {
+  display: flex;
+  justify-content: space-between;
 }
