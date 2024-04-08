@@ -48,6 +48,7 @@
         color: white;
       }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   </head>
   <body>
     <div class="container-fluid main-div">
@@ -55,7 +56,7 @@
         <h3 id="formTitle" style="text-align: center">WelCome To Vchat</h3>
 
         <div class="container">
-          <form action="/validiate-user" method="post">
+          <form action="/validiate-user" method="post" onsubmit="GetResponse()">
             <label for="email">Email :</label>
             <input
               type="email"
@@ -83,5 +84,6 @@
         </button>
       </div>
     </div>
+    <script src="login.js"></script>
   </body>
 </html>
