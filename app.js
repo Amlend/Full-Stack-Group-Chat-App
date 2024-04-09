@@ -13,6 +13,27 @@ const msgRouter = require("./routers/message");
 const port = 3000;
 const app = express();
 
+const http = require("http").createServer(app);
+
+const io = require("socket.io")(http);
+
+const users = {};
+
+/*io.on('connection', socket => {
+  console.log(socket.id)
+  socket.on('new-user', name => {
+    users[socket.id] = name
+    socket.broadcast.emit('user-connected', name)
+  })
+  socket.on('send-chat-message', message => {
+    socket.broadcast.emit('chat-message', { message: message, name: users[socket.id] })
+  })
+  socket.on('disconnect', () => {
+    socket.broadcast.emit('user-disconnected', users[socket.id])
+    delete users[socket.id]
+  })
+}) */
+
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public", "css")));
@@ -38,13 +59,25 @@ userGroup.belongsTo(User);
 Group.hasMany(userGroup);
 userGroup.belongsTo(Group);
 
+io.on("connection", (socket) => {
+  socket.on("chat message", (msg, room) => {
+    console.log(socket.id);
+    socket.to(room).emit("chat message", msg);
+  });
+
+  socket.on("join-room", (room) => {
+    socket.join(room);
+    console.log("-----. room joined", room);
+  });
+});
+
 app.get("*", (req, res) => {
   res.send("Page Not Found ");
 });
 sequelize
   .sync()
   .then(() => {
-    app.listen(port, () => {
+    http.listen(port, () => {
       console.log(`Server running on port ${port} `);
     });
   })

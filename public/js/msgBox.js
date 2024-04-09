@@ -1,33 +1,39 @@
 window.addEventListener("DOMContentLoaded", () => {
-  fetchData();
+  const groupId = localStorage.removeItem("current_groupId");
+
+  // fetchData();
   GroupinPanel();
 });
 
-setInterval(async () => {
-  const token = localStorage.getItem("token");
-  const groupid = localStorage.getItem("current_groupId");
-  await axios
-    .get("http://localhost:3000/get-msg", {
-      headers: { Authorization: token, GroupId: groupid },
-    })
-    .then((response) => {
-      console.log(response);
-      const message = response.data.messages;
-      const oldData = localStorage.getItem("currentData");
-      localStorage.setItem("currentData", message.length);
+/*setInterval( async() => {
 
-      if (message.length > oldData) {
-        if (response.data.success === true) {
-          for (let i = oldData; i < message.length; i++) {
-            addToMsgBox(message[i], response.data.userId);
+ const token = localStorage.getItem('token');
+ const groupid = localStorage.getItem('current_groupId');
+ await axios.get('http://localhost:3000/get-msg',{headers:{"Authorization": token, "GroupId": groupid}})
+ .then((response) =>{
+  console.log(response);
+      const message = response.data.messages;
+      const oldData = localStorage.getItem('currentData');
+      localStorage.setItem('currentData', message.length);
+
+      if(message.length > oldData){
+      
+       if( response.data.success === true){
+         for(let i= oldData; i< message.length; i++){
+             addToMsgBox(message[i], response.data.userId);
+             
           }
         }
+
       }
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-}, 1000);
+
+      
+ })
+ .catch((err) =>{
+    console.log(err)
+ })
+ 
+}, 1000);*/
 
 async function fetchData() {
   const token = localStorage.getItem("token");
@@ -114,6 +120,11 @@ async function GroupinPanel() {
       const msgBoxDiv = document.createElement("div");
       msgBoxDiv.id = "msgBox";
       Box.appendChild(msgBoxDiv);
+      const groupId = localStorage.getItem("current_groupId");
+      const room = `group${groupId}`;
+
+      socket.emit("join-room", room);
+
       fetchData();
     });
   }
@@ -169,6 +180,7 @@ async function SearchUsers() {
       li.appendChild(space);
       li.appendChild(addbtn);
       ul.appendChild(li);
+      document.getElementById("search").value = "";
 
       addbtn.addEventListener("click", addToGroup);
 

@@ -26,12 +26,60 @@
     ></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-    <script src="msgBox.js"></script>
+    <style>
+      body {
+        margin: 0;
+        padding-bottom: 3rem;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+      }
+
+      #send-container {
+        background: rgba(0, 0, 0, 0.15);
+        padding: 0.25rem;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        height: 3rem;
+        box-sizing: border-box;
+        backdrop-filter: blur(10px);
+      }
+      #messageInp {
+        border: none;
+        padding: 0 1rem;
+        flex-grow: 1;
+        border-radius: 2rem;
+        margin: 0.25rem;
+      }
+      #messageInp:focus {
+        outline: none;
+      }
+      #send-container > button {
+        background: #333;
+        border: none;
+        padding: 0 1rem;
+        margin: 0.25rem;
+        border-radius: 3px;
+        outline: none;
+        color: #fff;
+      }
+
+      #messages {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
+      #messages > li {
+        padding: 0.5rem 1rem;
+      }
+      #messages > li:nth-child(odd) {
+        background: #efefef;
+      }
+    </style>
   </head>
   <body>
-    <nav>
-      <img class="logo" src="chat.jpeg" alt="icon loding ...." />
-    </nav>
     <div class="container-fluid panel">
       <div class="groupBox">
         <input
@@ -66,6 +114,7 @@
                   name="search"
                   id="search"
                   placeholder="Enter Email"
+                  required
                 />
                 <input type="button" value="Search" onclick="SearchUsers()" />
               </div>
@@ -77,21 +126,63 @@
             </div>
           </div>
         </div>
+        <form
+          action="msg-send"
+          method="post"
+          id="send-container"
+          onsubmit="msgAuth()"
+        >
+          <input
+            type="text"
+            name="message"
+            id="messageInp"
+            required
+            placeholder="Enter message"
+          />
+          <button class="btn" type="submit">Send</button>
+        </form>
       </div>
     </div>
 
-    <div class="send">
-      <form
-        action="msg-send"
-        method="post"
-        id="send-container"
-        onsubmit="msgAuth()"
-      >
-        <input type="text" name="message" id="messageInp" required />
-        <button class="btn" type="submit">Send</button>
-      </form>
-    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="msgBox.js"></script>
+
     <script>
+      const socket = io();
+
+      const messages = document.getElementById("msgBox");
+      const form = document.getElementById("send-container");
+      const input = document.getElementById("messageInp");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const groupId = localStorage.getItem("current_groupId");
+        const room = `group${groupId}`;
+        if (input.value) {
+          socket.emit("chat message", input.value, room);
+        }
+      });
+
+      socket.on("chat message", (msg) => {
+        const item = document.createElement("div");
+        item.classList = "container message left";
+        item.textContent = " other:" + msg;
+        messages.appendChild(item);
+        messages.scrollTo(0, document.body.scrollHeight);
+      });
+    </script>
+
+    <script>
+      function myWonMessage() {
+        const div = document.getElementById("msgBox");
+        const message = document.getElementById("messageInp").value;
+        const messageDiv = document.createElement("div");
+        messageDiv.classList = "container message right";
+        const textNode = document.createTextNode(message);
+        messageDiv.appendChild(textNode);
+        div.appendChild(messageDiv);
+      }
+
       function msgAuth() {
         const token = localStorage.getItem("token");
         const groupId = localStorage.getItem("current_groupId");
@@ -103,10 +194,7 @@
             { headers: { Authorization: token } }
           )
           .then((Response) => {
-            if (Response.data.success === true) {
-              window.location.reload();
-            }
-
+            myWonMessage();
             document.getElementById("messageInp").value = " ";
           })
           .catch((err) => {
@@ -115,4 +203,48 @@
       }
     </script>
   </body>
+
+  <!--<body>
+     <nav>
+      
+        <img  class="logo" src="chat.jpeg" alt="icon loding ....">
+      
+
+     </nav>
+     
+     <div class="send">
+        <form action="msg-send" method="post" id="send-container" onsubmit="msgAuth()">
+              <input type="text" name="message" id="messageInp" required>
+              <button class="btn " type="submit">Send</button>
+        </form>
+     </div>
+     
+     <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+      const socket = io();
+
+      const messages = document.getElementById('msgBox');
+      const form = document.getElementById('send-container');
+      const input = document.getElementById('messageInp');
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (input.value) {
+          socket.emit('chat message', input.value);
+          input.value = '';
+        }
+      });
+
+      socket.on('chat message', (msg) => {
+        const item = document.createElement('div');
+        item.textContent = msg;
+        messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+    </script>
+ 
+     
+        
+</body>-->
 </html>
