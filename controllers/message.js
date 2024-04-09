@@ -4,10 +4,12 @@ const User = require("../models/message");
 exports.PostMessage = (req, res, next) => {
   const msg = req.body.message;
   const userId = req.user.id;
+  const groupid = req.body.groupId;
 
   Message.create({
     message: msg,
     userId: userId,
+    groupId: groupid,
   })
     .then(() => {
       res.status(200).json({ success: true });
@@ -18,13 +20,15 @@ exports.PostMessage = (req, res, next) => {
 };
 
 exports.getMsg = (req, res, next) => {
+  const groupId = req.header("GroupId");
   const user = req.user.id;
 
   try {
     User.findOne({ where: { id: user } })
       .then(() => {
-        Message.findAll()
+        Message.findAll({ where: { groupId: groupId } })
           .then((msg) => {
+            //  console.log(msg)
             res
               .status(200)
               .json({ success: true, messages: msg, userId: user });

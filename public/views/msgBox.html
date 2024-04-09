@@ -44,7 +44,40 @@
         <input type="button" onclick="CreateGroup()" value="Create Group" />
         <ul id="groupPanel"></ul>
       </div>
-      <div class="container msg-box" id="msgBox"></div>
+      <div class="container msg-box">
+        <div class="chatBoxHeader">
+          <h5 id="headGroupName"></h5>
+          <div>
+            <button onclick="AddUserInGroup()">Add</button
+            ><button id="viewBtn" onclick="seeUserInGroup()">See</button>
+          </div>
+        </div>
+
+        <div id="Box">
+          <div id="msgBox">
+            <div id="addUserPanel">
+              <input type="button" value="X" onclick="hideAddUserPanel()" />
+
+              <div class="addUserPanel-child">
+                <h5>Add Participents</h5>
+
+                <input
+                  type="email"
+                  name="search"
+                  id="search"
+                  placeholder="Enter Email"
+                />
+                <input type="button" value="Search" onclick="SearchUsers()" />
+              </div>
+
+              <ul id="groupMenbers"></ul>
+              <ul id="membersofgroup">
+                <h5>Participents</h5>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="send">
@@ -61,11 +94,12 @@
     <script>
       function msgAuth() {
         const token = localStorage.getItem("token");
+        const groupId = localStorage.getItem("current_groupId");
         const message = document.getElementById("messageInp").value;
         axios
           .post(
             "http://localhost:3000/msg-send",
-            { message },
+            { message, groupId },
             { headers: { Authorization: token } }
           )
           .then((Response) => {

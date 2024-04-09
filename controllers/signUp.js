@@ -40,3 +40,15 @@ exports.postUserData = (req, res, next) => {
     console.log(error);
   }
 };
+
+exports.postSearchUser = (req, res, next) => {
+  const email = req.body.inputEmail;
+
+  User.findOne({ where: { email: email }, attributes: ["id", "name"] })
+    .then((user) => {
+      res.status(200).json({ success: true, user: user });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};

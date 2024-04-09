@@ -76,3 +76,20 @@ body {
   display: flex;
   justify-content: space-between;
 }
+.chatBoxHeader {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px;
+  max-width: 100%;
+  min-height: 35px;
+  background-color: rgb(180, 180, 180);
+}
+
+#addUserPanel {
+  background-color: darkgray;
+  display: none;
+}
+#membersofgroup {
+  min-width: 200px;
+  overflow-y: auto;
+}

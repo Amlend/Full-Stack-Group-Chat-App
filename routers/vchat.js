@@ -15,6 +15,16 @@ router.get(
   authenticat.authentication,
   vchatController.getGroups
 );
+router.post(
+  "/add_to_group",
+  authenticat.authentication,
+  vchatController.postInUserGroup
+);
+router.post(
+  "/see_group_users",
+  authenticat.authentication,
+  vchatController.postSeeUsersInGroup
+);
 //router.get('/vchatCall', vchatController.getPage);
 
 module.exports = router;
