@@ -1,0 +1,12 @@
+{
+  "name": "groupchatapp",
+  "version": "1.0.0",
+  "description": "Full stack group chat app",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "author": "Amlend Jadaun",
+  "license": "ISC"
+}
