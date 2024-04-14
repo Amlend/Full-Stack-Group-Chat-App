@@ -10,6 +10,7 @@
       integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
       crossorigin="anonymous"
     />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.3/socket.io.js"></script>
     <link rel="stylesheet" href="/chat.css" />
     <title>Chat App</title>
   </head>
@@ -23,8 +24,17 @@
             <button class="btn btn-primary">Send</button>
           </div>
           <div class="col col-11">
-            <input type="text" class="form-control" name="message" />
+            <input type="text" class="form-control" name="message" id="messa" />
           </div>
+          <form id="form" enctype="multipart/form-data">
+            <input
+              type="file"
+              name="image"
+              id="file"
+              accept="image/*"
+              onchange="sendImage(this)"
+            />
+          </form>
         </div>
       </form>
     </div>

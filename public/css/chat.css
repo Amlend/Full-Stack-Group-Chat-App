@@ -8,3 +8,9 @@
 .bg-chat {
   background-color: rgb(218, 218, 218);
 }
+
+@media (max-width: 768px) {
+  .col-1 {
+    order: 2; /* Move button below input on small screens */
+  }
+}

@@ -1,6 +1,7 @@
 let chatForm = document.getElementById("chat-form");
 let chatBox = document.getElementById("message-box");
 let friendName = document.getElementById("friend-name");
+const socket = io();
 chatForm.addEventListener("submit", sendMessage);
 
 async function sendMessage(event) {
@@ -25,10 +26,34 @@ async function sendMessage(event) {
     url: api + "message",
     data: message,
   });
+  document.getElementById("mess").value = "";
+  socket.emit("send-message", message); // Send message to server
 }
 
+socket.on("receive-message", (data) => {
+  const { from, content } = data;
+
+  // display received message
+  let structure;
+  if (from === socket.id) {
+    structure = `
+        <div class="col col-12 text-end p-2">
+            ${content}
+        </div>
+      `;
+  } else {
+    structure = `
+        <div class="col col-12 p-2">${content}</div>
+      `;
+  }
+
+  let ele = document.createElement("div");
+  ele.setAttribute("class", from === socket.id ? "row bg-chat" : "row");
+  ele.innerHTML = structure;
+  chatBox.appendChild(ele);
+});
+
 window.addEventListener("DOMContentLoaded", getAllMessages);
-// Global Variable to indicate message inside DOM so we ignore this message
 
 let lastIndex = 0;
 function getAllMessages(event) {
@@ -178,7 +203,28 @@ async function fromBackend() {
       }
       lastIndex = d.id;
     }
+    const room = `chat${user}`;
+    socket.emit("join-room", room);
   } catch (err) {
     console.log(err);
   }
+}
+
+async function sendImage(event) {
+  const file = event.files[0];
+  console.log(file);
+  const formData = new FormData();
+  formData.append("image", file);
+  await axios
+    .post("http://localhost:3000/send-image", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+    .then((result) => {
+      const imgUrl = result.data.imgUrl;
+      console.log(imgUrl);
+      document.getElementById("mess").value = imgUrl;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 }

@@ -1,5 +1,6 @@
 let chatForm = document.getElementById("chat-form");
 let chatBox = document.getElementById("message-box");
+const socket = io();
 chatForm.addEventListener("submit", sendMessage);
 
 async function sendMessage(event) {
@@ -24,7 +25,32 @@ async function sendMessage(event) {
     url: api + "group/message",
     data: message,
   });
+  document.getElementById("messa").value = "";
+  socket.emit("send-message", message); // Send message to server
 }
+
+socket.on("receive-message", (data) => {
+  const { from, content } = data;
+
+  // display received message
+  let structure;
+  if (from === socket.id) {
+    structure = `
+          <div class="col col-12 text-end p-2">
+              ${content}
+          </div>
+        `;
+  } else {
+    structure = `
+          <div class="col col-12 p-2">${content}</div>
+        `;
+  }
+
+  let ele = document.createElement("div");
+  ele.setAttribute("class", from === socket.id ? "row bg-chat" : "row");
+  ele.innerHTML = structure;
+  chatBox.appendChild(ele);
+});
 
 window.addEventListener("DOMContentLoaded", getAllMessages);
 
@@ -179,6 +205,8 @@ async function fromBackend() {
       }
       lastIndex = d.id;
     }
+    const room = `group${groupName}`;
+    socket.emit("join-room", room);
   } catch (err) {
     console.log(err);
   }
