@@ -1,6 +1,5 @@
 let chatForm = document.getElementById("chat-form");
 let chatBox = document.getElementById("message-box");
-let friendName = document.getElementById("friend-name");
 chatForm.addEventListener("submit", sendMessage);
 
 async function sendMessage(event) {
@@ -14,36 +13,36 @@ async function sendMessage(event) {
     message[key] = value;
   }
 
-  let to = localStorage.getItem("chat");
+  let to = localStorage.getItem("groupChat");
   if (to === undefined) {
     alert("Please Select Friend");
     window.location.href = "/friends";
   }
-  message["to"] = to;
+  message["groupId"] = to;
   let res = await axios({
     method: "post",
-    url: api + "message",
+    url: api + "group/message",
     data: message,
   });
 }
 
 window.addEventListener("DOMContentLoaded", getAllMessages);
-// Global Variable to indicate message inside DOM so we ignore this message
 
 let lastIndex = 0;
 function getAllMessages(event) {
   // From Local Storage
-  let to = localStorage.getItem("chat");
+  let to = localStorage.getItem("groupChat");
+  let self = localStorage.getItem("self");
 
-  let store = JSON.parse(localStorage.getItem("message"));
+  let store = JSON.parse(localStorage.getItem("group_messages"));
 
   if (store) {
     for (const sender of store) {
-      if (Number(sender.to) === Number(to)) {
-        lastIndex = sender["messages"].at(-1).id;
-        console.log(lastIndex);
-        for (const d of sender["messages"]) {
-          if (Number(d.toUser) === Number(to)) {
+      if (Number(sender.group) === Number(to)) {
+        lastIndex = sender["group_messages"].at(-1).id;
+
+        for (const d of sender["group_messages"]) {
+          if (Number(d.user.id) === Number(self)) {
             let structure = `     
                         <div class="col col-12 text-end p-2">
                             ${d.message}
@@ -57,7 +56,7 @@ function getAllMessages(event) {
             chatBox.appendChild(ele);
           } else {
             let structure = `     
-              <div class="col col-12 p-2">${d.message}</div>
+              <div class="col col-12 p-2">${d.user.name}:${d.message}</div>
            `;
 
             let ele = document.createElement("div");
@@ -74,23 +73,25 @@ function getAllMessages(event) {
     fromBackend();
   }, 1000);
 }
-
 async function fromBackend() {
-  let to = localStorage.getItem("chat");
+  let to = localStorage.getItem("groupChat");
 
   // From Backend
   try {
     let res = await axios({
-      method: "post",
-      url: api + "message/all",
-      data: { to: to, skip: lastIndex },
+      method: "get",
+      url: api + "group/message?id=" + to + "&&skip=" + lastIndex,
     });
     let data = res.data.data.message;
-    let user = res.data.data.user;
+    let self = Number(res.data.data.self);
+    localStorage.setItem("self", self);
+
+    let message = data.length > 0 ? data[0].groupMessages : [];
+    let groupName = data.name;
 
     // Storing Local Storage
-    if (data.length > 0) {
-      let getMessages = localStorage.getItem("message");
+    if (message.length > 0) {
+      let getMessages = localStorage.getItem("group_messages");
 
       if (getMessages) {
         let arr = JSON.parse(getMessages);
@@ -99,11 +100,11 @@ async function fromBackend() {
         let flag = true;
 
         for (const d of arr) {
-          if (Number(d.to) === Number(to)) {
-            for (const dd of data) {
-              d["messages"].push(dd);
-              if (d["messages"].length > 10) {
-                d["messages"].shift();
+          if (Number(d.group) === Number(to)) {
+            for (const dd of message) {
+              d["group_messages"].push(dd);
+              if (d["group_messages"].length > 10) {
+                d["group_messages"].shift();
               }
               flag = false;
             }
@@ -116,14 +117,14 @@ async function fromBackend() {
            *
            */
           obj = {};
-          obj["messages"] = [];
-          obj["to"] = to;
+          obj["group_messages"] = [];
+          obj["group"] = to; // Group ID Storing
 
-          let length = data.length;
+          let length = message.length;
 
-          for (const d of data) {
+          for (const d of message) {
             if (length < 10) {
-              obj["messages"].push(d);
+              obj["group_messages"].push(d);
             }
             length--;
           }
@@ -131,34 +132,34 @@ async function fromBackend() {
           arr.push(obj);
         }
 
-        localStorage.setItem("message", JSON.stringify(arr));
+        localStorage.setItem("group_messages", JSON.stringify(arr));
       } else {
         let arr = [];
 
         obj = {};
-        obj["messages"] = [];
-        obj["to"] = to;
+        obj["group_messages"] = [];
+        obj["group"] = to;
 
-        let length = data.length;
+        let length = message.length;
 
-        for (const d of data) {
+        for (const d of message) {
           if (length < 10) {
-            obj["messages"].push(d);
+            obj["group_messages"].push(d);
           }
           length--;
         }
 
         arr.push(obj);
-        localStorage.setItem("message", JSON.stringify(arr));
+        localStorage.setItem("group_messages", JSON.stringify(arr));
       }
     }
 
-    for (const d of data) {
-      if (d.toUser === Number(to)) {
-        let structure = `     
+    for (const d of message) {
+      if (d.user.id === Number(self)) {
+        let structure = `
                     <div class="col col-12 text-end p-2">
                         ${d.message}
-                 
+                       
                     </div>
                   `;
 
@@ -167,8 +168,8 @@ async function fromBackend() {
         ele.innerHTML = structure;
         chatBox.appendChild(ele);
       } else {
-        let structure = `     
-          <div class="col col-12 p-2">${d.message}</div>
+        let structure = `
+          <div class="col col-12 p-2"> ${d.user.name}: ${d.message}</div>
        `;
 
         let ele = document.createElement("div");

@@ -22,7 +22,7 @@ async function signup(event) {
 
     if (res.status === 201) {
       alert("SignUp Done");
-      window.location = "./login.html";
+      window.location = "/user/login";
     } else {
       alert(res.data.message);
     }

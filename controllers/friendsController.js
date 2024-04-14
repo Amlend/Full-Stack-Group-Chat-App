@@ -1,7 +1,8 @@
 const sequelize = require("../utils/database");
+const path = require("path");
 const { Op } = require("sequelize");
 const jwt = require("jsonwebtoken");
-const SECRET_KEY = "process.env.SECRET_KEY";
+const SECRET_KEY = process.env.SECRET_KEY;
 
 // Models
 const User = sequelize.models.user;
@@ -9,6 +10,10 @@ const Message = sequelize.models.message;
 
 // const Message = sequelize.models.message;
 const Friends = sequelize.models.friendsRelation;
+
+exports.getFriendsPage = (req, res, next) => {
+  res.sendFile(path.join(__dirname, "../", "public", "views", "friends.html"));
+};
 
 exports.allFriends = (req, res, next) => {
   let token = req.headers.token;

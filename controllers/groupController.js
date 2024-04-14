@@ -13,6 +13,8 @@ const GroupMessage = sequelize.models.groupMessage;
 exports.addGroup = (req, res, next) => {
   let body = req.body;
   let token = req.headers.token;
+  console.log("bodyyyyyy");
+  console.log(body.users);
   if (body !== undefined && token !== undefined) {
     jwt.verify(token, SECRET_KEY, async function (err, decryptToken) {
       let admin = decryptToken.userId;
@@ -40,6 +42,7 @@ exports.addGroup = (req, res, next) => {
           let groupList = await GroupUser.findAll({
             where: { groupId: group.id },
           });
+          console.log(groupList[0]);
           res.status(201).json({ status: "success", data: [groupList] });
         } catch (err) {
           res.status(500).json({ status: "error", message: "Server Error" });

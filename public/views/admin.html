@@ -10,28 +10,25 @@
       integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
       crossorigin="anonymous"
     />
-    <link rel="stylesheet" href="/chat.css" />
-    <title>Chat App</title>
+    <title>Admin Page</title>
   </head>
   <body>
-    <div class="text-center" id="friend-name"></div>
-    <div class="container w-50 rounded shadow" id="message-box"></div>
-
-    <div class="send-box">
-      <form action="" id="chat-form">
-        <div class="row">
-          <div class="col col-1">
-            <button class="btn btn-primary">Send</button>
-          </div>
-          <div class="col col-11">
-            <input type="text" class="form-control" name="message" />
-          </div>
-        </div>
-      </form>
+    <div id="add-friend" class="container d-flex justify-content-center">
+      <div>
+        <div class="text-center fs-2 mb-5">Add Friend</div>
+        <table class="table" id="admin-add-friend"></table>
+      </div>
+    </div>
+    <!-- Remove Friend -->
+    <div id="add-friend" class="container d-flex justify-content-center">
+      <div>
+        <div class="text-center fs-2 mb-5">Remove Friend</div>
+        <table class="table" id="admin-remove-friend"></table>
+      </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="/global.js"></script>
-    <script src="/chat.js"></script>
+    <script src="/admin.js"></script>
   </body>
 </html>

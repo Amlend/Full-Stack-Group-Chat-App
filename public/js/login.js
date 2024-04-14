@@ -33,7 +33,7 @@ async function login(event) {
       }
       alert("Login Done");
 
-      window.location = "./friends.html";
+      window.location.href = "/friends";
     } else {
       alert(res.data.message);
     }
