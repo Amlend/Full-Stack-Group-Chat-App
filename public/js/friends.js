@@ -165,8 +165,6 @@ createGroup.addEventListener("submit", async (event) => {
       url: api + "group/create",
       data: obj,
     });
-    console.log("statusssss");
-    console.log(res.status);
 
     if (res.data.status === "success") {
       alert("Group Created");
