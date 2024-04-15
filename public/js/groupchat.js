@@ -211,3 +211,22 @@ async function fromBackend() {
     console.log(err);
   }
 }
+
+async function sendImage(event) {
+  const file = event.files[0];
+  console.log(file);
+  const formData = new FormData();
+  formData.append("image", file);
+  await axios
+    .post("http://localhost:3000/send-image", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+    .then((result) => {
+      const imgUrl = result.data.imgUrl;
+      console.log(imgUrl);
+      document.getElementById("messa").value = imgUrl;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
