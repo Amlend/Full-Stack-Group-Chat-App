@@ -2,10 +2,10 @@ const { Sequelize } = require("sequelize");
 
 // Adding Details of Sequelize
 
-const DB_NAME = "v-chat";
-const DB_UN = "root";
-const DB_P = "riverdale";
-const DB_H = "localhost";
+const DB_NAME = process.env.DB_NAME;
+const DB_UN = process.env.USER_NAME;
+const DB_P = process.env.DB_PASSWORD;
+const DB_H = process.env.DB_HOST;
 
 const sequelize = new Sequelize(DB_NAME, DB_UN, DB_P, {
   dialect: "mysql",

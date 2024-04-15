@@ -216,7 +216,7 @@ async function sendImage(event) {
   const formData = new FormData();
   formData.append("image", file);
   await axios
-    .post("http://localhost:3000/send-image", formData, {
+    .post("http://16.170.239.102/send-image", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     })
     .then((result) => {

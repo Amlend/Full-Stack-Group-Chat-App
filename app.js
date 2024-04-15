@@ -15,6 +15,7 @@ const sequelize = require("./utils/database");
 const app = express();
 const http = require("http").createServer(app);
 const io = require("socket.io")(http);
+const port = process.env.PORT || 3000;
 
 // All Middleware
 app.use(cors());
@@ -71,8 +72,8 @@ io.on("connection", (socket) => {
 sequelize
   .sync()
   .then(() => {
-    http.listen(3000, () => {
-      console.log("Listening on 3000");
+    http.listen(port, () => {
+      console.log(`Listening on ${port}`);
     });
   })
   .catch((err) => {
